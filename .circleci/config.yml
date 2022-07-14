@@ -15,8 +15,4 @@ jobs:
       - run:
           name: ️️🏗️ pip dev requirements
           command: |
-           docker run --name seata-server \
-          -p 8091:8091 \
-          -e SEATA_IP=192.168.1.1 \
-          -e SEATA_PORT=8091 \
-           seataio/seata-server
+           docker run --name seata-server -p 8091:8091 -e SEATA_IP=192.168.1.1 -e SEATA_PORT=8091 seataio/seata-server
