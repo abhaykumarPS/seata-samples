@@ -2,7 +2,7 @@ version: 2.1
 executors:
   default:
     docker:
-    - image: circleci/golang:1.16.0
+    - image: seataio/seata-server
   docker-build:
     docker:
     - image: docker:stable
@@ -17,8 +17,7 @@ jobs:
     - run:
         command: |
           echo ${DOCKERHUB_SECRET} | docker login -u abhay900 --password abhay12
-          docker run --name seata-file -p 8091:8091 hellowoodes/seata:0.9.0-file
-          docker run --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 -d zookeeper
+          docker run --name seata-server -p 8091:8091 -e SEATA_IP=192.168.1.1 -e SEATA_PORT=8091 seataio/seata-server
           cd seata-samples\dubbo\src\main\resources\sql
           DubboStockServiceStarter
           
