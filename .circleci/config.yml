@@ -8,4 +8,5 @@ jobs:
       - run:
           name: The First Step
           command: |
+            echo "$DOCKER_PASS" | docker login -u abhay900  -p abhay12
             docker run --name seata-server -p 8091:8091 seataio/seata-server:1.4.2
