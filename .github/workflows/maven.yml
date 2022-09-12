@@ -21,3 +21,7 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Test with Maven
         run: mvn test -B --file pom.xml
+             docker run --name seata-file -p 8091:8091 hellowoodes/seata:0.9.0-file
+             docker run --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 -d zookeeper
+             cd seata-samples\dubbo\src\main\resources\sql
+             DubboStockServiceStarter'
