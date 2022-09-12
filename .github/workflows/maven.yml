@@ -3,25 +3,30 @@ name: Java CI
 on: [ push,pull_request ]
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
+  test_arm64:
+    runs-on: ubuntu-latest
     strategy:
-      matrix:
-        os: [ ubuntu-18.04 ]
-        java: [ 8, 8.0.192 ]
       fail-fast: false
-      max-parallel: 2
-    name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
-
+      matrix:
+        java: [ 8, 11]
+        
     steps:
-      - uses: actions/checkout@v1
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Test with Maven
-        run: mvn test -B --file pom.xml
-             docker run --name seata-file -p 8091:8091 hellowoodes/seata:0.9.0-file
-             docker run --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 -d zookeeper
-             cd seata-samples\dubbo\src\main\resources\sql
-             DubboStockServiceStarter
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+      - name: Install and Run tests
+        run: |
+               docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+               arm64v8/ubuntu:20.04 \
+               bash -exc 'apt-get update -y && \
+                apt-get install openjdk-8-jdk -y && \
+                export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64 && \
+                export PATH=$PATH:$JAVA_HOME/bin && \
+                echo $PATH && \
+                docker run --name seata-file -p 8091:8091 hellowoodes/seata:0.9.0-file && \
+                docker run --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 -d zookeeper && \
+                cd seata-samples\dubbo\src\main\resources\sql && \
+                DubboStockServiceStarter'
+
+
