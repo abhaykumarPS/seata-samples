@@ -1,17 +1,39 @@
 version: 2.1
 
+orbs: 
+   java: circleci/openjdk:8-jdk
+
+run:
+when: "branch =~ '.*' OR pull_request =~'.*'"  
 jobs:
-  
-  build-medium-amd64:
+  manylinux2014-aarch64:
+    parameters:
+      cibw_build:
+        type: string
+        default: "cp37-*"
+
     machine:
       image: ubuntu-2004:202101-01
-   
-    working_directory: ~/seata-samples
-    steps: 
+    resource_class: arm.medium
+    steps:
       - checkout
       - run: sudo apt-get update && sudo apt-get install curl
-      - run: sudo apt install gnome-terminal
-      - run: sudo apt-get update
-      - run: sudo apt-get install ./docker-desktop-20.10.14-x86_64.deb
-      - run: docker run --name seata-file -p 8091:8091 hellowoodes/seata:0.9.0-file
+      - run: apt-get install openjdk-8-jdk -y
+      - run: export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64
+      - run: export PATH=$PATH:$JAVA_HOME/bin
+      - run: echo $PATH
+      - run: docker run --name seata-server -p 8091:8091 -p 7091:7091 seataio/seata-server:latest
+      - run: docker run --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 -d zookeeper
+      - run: cd seata-samples\dubbo\src\main\resources\sql
+      - run: DubboStockServiceStarter
           
+      
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - manylinux2014-aarch64:
+          matrix:
+            parameters:
+              cibw_build:
+                - "cp37*"
