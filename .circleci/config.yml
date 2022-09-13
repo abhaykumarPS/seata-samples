@@ -1,7 +1,10 @@
 version: 2.1
 
-orbs: 
-   java: circleci/openjdk:8-jdk
+executors:
+  java:
+    description: The docker container to use for building java services
+    docker:
+      - image: circleci/openjdk:8-jdk
 
 run:
 when: "branch =~ '.*' OR pull_request =~'.*'"  
