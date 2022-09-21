@@ -24,6 +24,7 @@ jobs:
                 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64 && \
                 export PATH=$PATH:$JAVA_HOME/bin && \
                 echo $PATH && \
+                apt-get install maven && \
                 mvn test -B --file pom.xml'
  
   
