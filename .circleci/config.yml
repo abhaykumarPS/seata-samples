@@ -3,6 +3,7 @@ version: 2.1
 executors:
   java:
     description: The docker container to use for building java services
+    no_output_timeout: 30m
     docker:
       - image: circleci/openjdk:8-jdk
 
